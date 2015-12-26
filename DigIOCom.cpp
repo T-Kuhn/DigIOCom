@@ -86,10 +86,11 @@ void DigIOCom::sendByte(unsigned char data){
 // - - - - - - - - - - - - - - - - - - -
 unsigned char DigIOCom::listen(){
     unsigned char tmp = 0x00;
-    long startTimer = millis();
+    //long startTimer = millis();
     bool flag = false;
     unsigned int clockIn = LOW;
     _inputCounter = 0;
+    unsigned char mask = 0x01;
     while(_inputCounter < 8){
         clockIn = digitalRead(_pin2);        
         if(clockIn == LOW && flag == true){
@@ -97,10 +98,10 @@ unsigned char DigIOCom::listen(){
             flag = false;
             _inputCounter++; 
             if (digitalRead(_pin1) == HIGH){
-                tmp <<= 1;      // shift the thing 1 to the left
-                tmp = tmp | 1U; // add the new bit (true) 
+                tmp = tmp | mask; // add the new bit (true) 
+                mask <<= 1;      // shift the mask 1 to the left
             }else{
-                tmp <<= 1;      // shift the thing to the left               
+                mask <<= 1;      // shift the mask 1 to the left           
             }
         }else if(clockIn == HIGH && flag == false){
             flag = true;
